@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MEGA - Voice & Text Chat</title>
+    <title>MEGA - Voice Chat</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -18,15 +18,25 @@
             color: white;
             min-height: 100vh;
             display: flex;
-            flex-direction: column;
+            justify-content: center;
             align-items: center;
             padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
         }
 
         .header {
             text-align: center;
             margin-bottom: 30px;
-            width: 100%;
         }
 
         .logo {
@@ -35,312 +45,128 @@
         }
 
         .header h1 {
-            font-size: 2.8rem;
+            font-size: 2rem;
             margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
 
         .header p {
-            font-size: 1.3rem;
             opacity: 0.9;
-            margin-bottom: 20px;
         }
 
-        .active-servers {
-            background: rgba(255,255,255,0.15);
-            padding: 20px;
-            border-radius: 15px;
-            margin: 20px 0;
-            text-align: center;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.2);
-            max-width: 800px;
-            width: 100%;
-        }
-
-        .servers-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        .join-form {
+            display: flex;
+            flex-direction: column;
             gap: 15px;
-            margin-top: 20px;
         }
 
-        .server-card {
-            background: rgba(255,255,255,0.1);
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        label {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        input {
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.9);
+            color: #333;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .join-btn {
+            background: linear-gradient(135deg, #4CD964, #5DE876);
+            color: white;
+            border: none;
             padding: 15px;
             border-radius: 10px;
-            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s;
+            margin-top: 10px;
         }
 
-        .server-card:hover {
-            transform: translateY(-2px);
-            background: rgba(255,255,255,0.15);
+        .join-btn:hover {
+            transform: scale(1.05);
+            background: linear-gradient(135deg, #3BD955, #4CD964);
         }
 
-        .server-code {
-            font-size: 1.5rem;
-            font-weight: bold;
-            background: rgba(0,0,0,0.3);
-            padding: 10px 20px;
-            border-radius: 8px;
-            margin: 10px 0;
-            display: inline-block;
-            letter-spacing: 1px;
-        }
-
-        .container {
-            display: flex;
-            gap: 30px;
-            max-width: 1200px;
+        .chat-container {
+            display: none;
+            flex-direction: column;
+            height: 80vh;
+            max-width: 800px;
             width: 100%;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .app-card {
             background: rgba(255,255,255,0.1);
             border-radius: 20px;
-            padding: 35px;
-            width: 380px;
-            text-align: center;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-            transition: all 0.3s ease;
+            overflow: hidden;
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255,255,255,0.1);
         }
 
-        .app-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        .chat-header {
+            background: rgba(255,255,255,0.15);
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
         }
 
-        .app-icon {
-            font-size: 4.5rem;
-            margin-bottom: 25px;
-        }
-
-        .app-title {
-            font-size: 2rem;
-            margin-bottom: 20px;
-            color: white;
-        }
-
-        .app-description {
-            color: rgba(255,255,255,0.8);
-            margin-bottom: 25px;
-            line-height: 1.6;
-            font-size: 1.1rem;
-        }
-
-        .features-list {
-            text-align: left;
-            margin-bottom: 30px;
-        }
-
-        .feature {
+        .server-info {
             display: flex;
             align-items: center;
-            margin-bottom: 12px;
-            color: rgba(255,255,255,0.9);
-            font-size: 1rem;
+            gap: 10px;
         }
 
-        .feature i {
-            color: #4CD964;
-            margin-right: 12px;
-            font-size: 1.1rem;
-        }
-
-        .action-btn {
-            color: white;
-            border: none;
-            padding: 15px 35px;
-            border-radius: 30px;
-            font-size: 1.2rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            width: 100%;
-            font-weight: 600;
-            margin-top: 15px;
-        }
-
-        .admin-btn {
-            background: linear-gradient(135deg, #FF6B6B, #FF8E8E);
-        }
-
-        .admin-btn:hover {
-            background: linear-gradient(135deg, #FF5252, #FF7B7B);
-            transform: scale(1.05);
-        }
-
-        .user-btn {
-            background: linear-gradient(135deg, #4CD964, #5DE876);
-        }
-
-        .user-btn:hover {
-            background: linear-gradient(135deg, #3BD955, #4CD964);
-            transform: scale(1.05);
-        }
-
-        .badge {
-            color: white;
-            padding: 8px 20px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            margin-bottom: 20px;
-            display: inline-block;
-            font-weight: 600;
-        }
-
-        .admin-badge {
-            background: linear-gradient(135deg, #FF6B6B, #FF8E8E);
-        }
-
-        .user-badge {
-            background: linear-gradient(135deg, #4CD964, #5DE876);
-        }
-
-        .status {
-            margin-top: 20px;
-            padding: 12px;
-            border-radius: 10px;
-            text-align: center;
-            font-weight: 500;
-        }
-
-        .online {
-            background: rgba(76, 217, 100, 0.2);
-            border: 1px solid #4CD964;
-        }
-
-        .ready {
-            background: rgba(255, 193, 7, 0.2);
-            border: 1px solid #FFC107;
-        }
-
-        .footer {
-            margin-top: 50px;
-            text-align: center;
-            color: rgba(255,255,255,0.7);
-            width: 100%;
-        }
-
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-
-        .modal-content {
-            background: rgba(255,255,255,0.95);
-            padding: 40px;
-            border-radius: 20px;
-            max-width: 450px;
-            width: 90%;
-            text-align: center;
-            color: #333;
-        }
-
-        .modal h2 {
-            margin-bottom: 20px;
-            color: #333;
-            font-size: 1.8rem;
-        }
-
-        .modal-input {
-            width: 100%;
-            padding: 15px 20px;
-            border-radius: 12px;
-            background: white;
-            border: 2px solid #e1e5e9;
-            color: #333;
-            font-size: 1rem;
-            margin-bottom: 20px;
-            text-align: center;
-            transition: border-color 0.3s;
-        }
-
-        .modal-input:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        .modal-buttons {
+        .voice-controls {
             display: flex;
+            align-items: center;
             gap: 15px;
-            justify-content: center;
         }
 
-        .modal-btn {
-            padding: 12px 30px;
+        .voice-btn {
+            background: #4CD964;
+            color: white;
             border: none;
-            border-radius: 12px;
+            padding: 10px 15px;
+            border-radius: 20px;
             cursor: pointer;
-            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
             font-weight: 600;
             transition: all 0.3s;
         }
 
-        .connect-btn {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
+        .voice-btn.off {
+            background: #FF6B6B;
         }
 
-        .connect-btn:hover {
+        .voice-btn:hover {
             transform: scale(1.05);
         }
 
-        .cancel-btn {
-            background: #95a5a6;
-            color: white;
-        }
-
-        .user-item {
-            display: flex;
-            align-items: center;
-            padding: 12px;
-            background: #f8f9fa;
-            margin: 8px 0;
-            border-radius: 10px;
-            color: #333;
-        }
-
-        .user-avatar {
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            margin-right: 12px;
-            color: white;
-        }
-
-        .server-info {
-            font-size: 0.9em;
-            opacity: 0.8;
-            margin-top: 5px;
-        }
-
         .voice-indicator {
-            display: inline-flex;
+            display: flex;
             align-items: center;
             gap: 8px;
-            background: rgba(255,255,255,0.2);
             padding: 8px 15px;
-            border-radius: 20px;
-            margin: 5px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 15px;
         }
 
         .pulse {
@@ -349,1075 +175,662 @@
 
         @keyframes pulse {
             0% { opacity: 1; }
-            50% { opacity: 0.5; }
+            50% { opacity: 0.3; }
             100% { opacity: 1; }
+        }
+
+        .blink {
+            animation: blink 0.5s infinite;
+        }
+
+        @keyframes blink {
+            0% { opacity: 1; }
+            50% { opacity: 0.3; }
+            100% { opacity: 1; }
+        }
+
+        .channels-sidebar {
+            width: 200px;
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-right: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .channel {
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .channel.active {
+            background: rgba(255,255,255,0.2);
+            font-weight: 600;
+        }
+
+        .channel:hover {
+            background: rgba(255,255,255,0.15);
+        }
+
+        .main-chat {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .message {
+            padding: 15px;
+            border-radius: 15px;
+            max-width: 70%;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.own {
+            background: rgba(76, 217, 100, 0.3);
+            margin-left: auto;
+            border: 1px solid rgba(76, 217, 100, 0.5);
+        }
+
+        .message.other {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .message.system {
+            background: rgba(255, 193, 7, 0.3);
+            text-align: center;
+            border: 1px solid rgba(255, 193, 7, 0.5);
+            max-width: 100%;
+        }
+
+        .message.voice {
+            background: rgba(102, 126, 234, 0.3);
+            border: 1px solid rgba(102, 126, 234, 0.5);
+        }
+
+        .message-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 5px;
+        }
+
+        .username {
+            font-weight: 600;
+        }
+
+        .voice-icon {
+            color: #4CD964;
+        }
+
+        .input-area {
+            padding: 20px;
+            background: rgba(255,255,255,0.15);
+            display: flex;
+            gap: 10px;
+            border-top: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .message-input {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.9);
+            color: #333;
+            font-size: 1rem;
+        }
+
+        .send-btn {
+            background: #4CD964;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .send-btn:hover {
+            background: #3BD955;
+            transform: scale(1.05);
+        }
+
+        .voice-send-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .voice-send-btn:hover {
+            background: #5a6fd8;
+            transform: scale(1.05);
+        }
+
+        .voice-send-btn.recording {
+            background: #FF6B6B;
+            animation: pulse 0.8s infinite;
+        }
+
+        .users-online {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+        }
+
+        .user-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px;
+            margin: 5px 0;
+            border-radius: 8px;
+        }
+
+        .user-item:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .user-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+
+        .user-speaking {
+            background: rgba(76, 217, 100, 0.3);
+        }
+
+        .speaking-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #4CD964;
+            margin-left: auto;
+            animation: blink 1s infinite;
         }
 
         @media (max-width: 768px) {
             .container {
-                flex-direction: column;
-                align-items: center;
+                margin: 10px;
+                padding: 20px;
             }
             
-            .app-card {
-                width: 95%;
-                max-width: 400px;
-                padding: 25px;
+            .chat-container {
+                height: 90vh;
             }
             
-            .header h1 {
-                font-size: 2.2rem;
-            }
-            
-            .servers-grid {
-                grid-template-columns: 1fr;
+            .message {
+                max-width: 85%;
             }
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <div class="logo">🚀</div>
-        <h1>MEGA CHAT</h1>
-        <p>Voice & Text Chat - Speak Instantly</p>
+    <!-- Join Screen -->
+    <div class="container" id="joinScreen">
+        <div class="header">
+            <div class="logo">🎤</div>
+            <h1>MEGA VOICE CHAT</h1>
+            <p>Join and speak with others in real-time</p>
+        </div>
         
-        <div class="active-servers">
-            <h3>🌐 Active MEGA Servers</h3>
-            <div class="servers-grid" id="activeServers">
-                <!-- Active servers will appear here -->
-            </div>
-        </div>
-    </div>
-
-    <div class="container">
-        <!-- Admin Card -->
-        <div class="app-card">
-            <div class="app-icon">👑</div>
-            <div class="badge admin-badge">CREATE SERVER</div>
-            <h2 class="app-title">Become Admin</h2>
-            <p class="app-description">
-                Create your own MEGA server with voice channels. Manage text and voice chat communities.
-            </p>
-            <div class="features-list">
-                <div class="feature">
-                    <i class="fas fa-check"></i>
-                    Create Voice Channels
-                </div>
-                <div class="feature">
-                    <i class="fas fa-check"></i>
-                    Text & Voice Chat
-                </div>
-                <div class="feature">
-                    <i class="fas fa-check"></i>
-                    User Management
-                </div>
-                <div class="feature">
-                    <i class="fas fa-check"></i>
-                    Real-time Moderation
-                </div>
+        <div class="join-form">
+            <div class="form-group">
+                <label for="serverCode">Server Code</label>
+                <input type="text" id="serverCode" placeholder="Enter MEGA-ABCD" value="MEGA-7A9B">
             </div>
             
-            <div class="status ready" id="adminStatus">
-                <i class="fas fa-plus-circle"></i> Ready to Create Server
+            <div class="form-group">
+                <label for="userName">Your Name</label>
+                <input type="text" id="userName" placeholder="Enter your username">
             </div>
             
-            <button class="action-btn admin-btn" onclick="createMEGAServer()">
-                <i class="fas fa-server"></i> Create New Server
-            </button>
-        </div>
-
-        <!-- User Card -->
-        <div class="app-card">
-            <div class="app-icon">🎤</div>
-            <div class="badge user-badge">VOICE CHAT</div>
-            <h2 class="app-title">Join & Speak</h2>
-            <p class="app-description">
-                Join any MEGA server and use voice chat. Speak instantly with microphone support.
-            </p>
-            <div class="features-list">
-                <div class="feature">
-                    <i class="fas fa-check"></i>
-                    Voice Messages
-                </div>
-                <div class="feature">
-                    <i class="fas fa-check"></i>
-                    Real-time Voice Chat
-                </div>
-                <div class="feature">
-                    <i class="fas fa-check"></i>
-                    Text Chat Available
-                </div>
-                <div class="feature">
-                    <i class="fas fa-check"></i>
-                    Microphone Support
-                </div>
-            </div>
-            
-            <div class="status ready" id="userStatus">
-                <i class="fas fa-hourglass-half"></i> Ready to Join Server
-            </div>
-            
-            <button class="action-btn user-btn" onclick="joinMEGAServer()">
-                <i class="fas fa-sign-in-alt"></i> Join Server
+            <button class="join-btn" onclick="joinChat()">
+                <i class="fas fa-sign-in-alt"></i> Join Voice Chat
             </button>
         </div>
     </div>
 
-    <div class="footer">
-        <p>Built with ❤️ | MEGA Chat - Voice & Text Communication</p>
-        <p>Speak with microphone • Send voice messages • Real-time voice chat</p>
-    </div>
-
-    <!-- Create Server Modal -->
-    <div class="modal" id="createModal">
-        <div class="modal-content">
-            <h2>🚀 Create MEGA Server</h2>
-            <p>Your unique server code will be generated</p>
-            
-            <input type="text" class="modal-input" id="adminNameInput" placeholder="Enter Your Admin Name">
-            
-            <div class="modal-buttons">
-                <button class="modal-btn cancel-btn" onclick="closeModal('createModal')">Cancel</button>
-                <button class="modal-btn connect-btn" onclick="generateServer()">Generate Server</button>
+    <!-- Chat Screen -->
+    <div class="chat-container" id="chatScreen">
+        <div class="chat-header">
+            <div class="server-info">
+                <i class="fas fa-server"></i>
+                <span id="currentServer">MEGA-7A9B</span>
             </div>
-        </div>
-    </div>
-
-    <!-- Join Server Modal -->
-    <div class="modal" id="joinModal">
-        <div class="modal-content">
-            <h2>🔗 Join MEGA Server</h2>
-            <p>Enter server code to join (e.g., MEGA-7A9B)</p>
             
-            <input type="text" class="modal-input" id="serverCodeInput" placeholder="Enter Server Code">
-            
-            <input type="text" class="modal-input" id="userNameInput" placeholder="Enter Your Username">
-            
-            <div class="modal-buttons">
-                <button class="modal-btn cancel-btn" onclick="closeModal('joinModal')">Cancel</button>
-                <button class="modal-btn connect-btn" onclick="connectToMEGAServer()">Join Server</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Voice Test Modal -->
-    <div class="modal" id="voiceTestModal">
-        <div class="modal-content">
-            <h2>🎤 Test Your Microphone</h2>
-            <p>Click to test your microphone before joining voice chat</p>
-            
-            <div style="margin: 20px 0;">
-                <div class="voice-indicator" id="voiceIndicator">
+            <div class="voice-controls">
+                <div class="voice-indicator" id="voiceStatus">
                     <i class="fas fa-microphone"></i>
-                    <span>Click to test microphone</span>
+                    <span>Voice Ready</span>
+                </div>
+                <button class="voice-btn" id="toggleVoiceBtn" onclick="toggleVoice()">
+                    <i class="fas fa-microphone"></i>
+                    Voice On
+                </button>
+            </div>
+        </div>
+
+        <div style="display: flex; flex: 1;">
+            <div class="channels-sidebar">
+                <h3>Channels</h3>
+                <div class="channel active"># general</div>
+                <div class="channel"># 🔊 voice-chat</div>
+                <div class="channel"># 🎮 gaming</div>
+                <div class="channel"># 🎵 music</div>
+                
+                <div class="users-online">
+                    <h4>Online Users</h4>
+                    <div id="usersList">
+                        <!-- Users will be added here -->
+                    </div>
                 </div>
             </div>
-            
-            <div id="audioVisualizer" style="height: 50px; margin: 20px 0; display: none;">
-                <!-- Audio visualizer will appear here -->
-            </div>
-            
-            <div class="modal-buttons">
-                <button class="modal-btn cancel-btn" onclick="closeVoiceTest()">Cancel</button>
-                <button class="modal-btn connect-btn" id="testMicBtn" onclick="testMicrophone()">Test Microphone</button>
-                <button class="modal-btn connect-btn" id="joinVoiceBtn" onclick="joinVoiceChat()" style="display: none;">Join Voice Chat</button>
+
+            <div class="main-chat">
+                <div class="messages" id="messagesContainer">
+                    <!-- Messages will appear here -->
+                </div>
+                
+                <div class="input-area">
+                    <input type="text" class="message-input" id="messageInput" placeholder="Type your message...">
+                    <button class="voice-send-btn" id="voiceSendBtn" onclick="toggleVoiceRecording()">
+                        <i class="fas fa-microphone"></i>
+                    </button>
+                    <button class="send-btn" onclick="sendMessage()">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Global MEGA System
-        const megaSystem = {
-            activeServers: [],
-            usedCodes: new Set(),
-            currentAdminWindow: null,
-            mediaRecorder: null,
-            audioChunks: [],
-            isRecording: false
-        };
+        // Global variables
+        let currentUser = '';
+        let currentServer = '';
+        let isVoiceEnabled = true;
+        let isRecording = false;
+        let mediaRecorder = null;
+        let audioChunks = [];
+        let peerConnections = new Map();
+        let localStream = null;
 
-        // Generate unique server code
-        function generateServerCode() {
-            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-            let code;
-            
-            do {
-                code = 'MEGA-';
-                for (let i = 0; i < 4; i++) {
-                    code += characters.charAt(Math.floor(Math.random() * characters.length));
-                }
-            } while (megaSystem.usedCodes.has(code));
-            
-            megaSystem.usedCodes.add(code);
-            return code;
-        }
-
-        // Update active servers display
-        function updateActiveServers() {
-            const serversGrid = document.getElementById('activeServers');
-            serversGrid.innerHTML = '';
-
-            if (megaSystem.activeServers.length === 0) {
-                serversGrid.innerHTML = `
-                    <div class="server-card">
-                        <div>No active servers</div>
-                        <div class="server-info">Create first server to see it here</div>
-                    </div>
-                `;
-                return;
-            }
-
-            megaSystem.activeServers.forEach(server => {
-                const serverCard = document.createElement('div');
-                serverCard.className = 'server-card';
-                serverCard.innerHTML = `
-                    <div class="server-code">${server.code}</div>
-                    <div>👥 ${server.users.length} users online</div>
-                    <div>📁 ${server.channels.length} channels</div>
-                    <div class="server-info">Created by ${server.adminName}</div>
-                `;
-                serversGrid.appendChild(serverCard);
-            });
-        }
-
-        // Modal functions
-        function showModal(modalId) {
-            document.getElementById(modalId).style.display = 'flex';
-        }
-
-        function closeModal(modalId) {
-            document.getElementById(modalId).style.display = 'none';
-        }
-
-        // Voice test functions
-        function showVoiceTest() {
-            showModal('voiceTestModal');
-        }
-
-        function closeVoiceTest() {
-            stopRecording();
-            closeModal('voiceTestModal');
-        }
-
-        // Test microphone function
-        async function testMicrophone() {
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                const testBtn = document.getElementById('testMicBtn');
-                const joinBtn = document.getElementById('joinVoiceBtn');
-                const voiceIndicator = document.getElementById('voiceIndicator');
-                
-                // Update UI
-                testBtn.style.display = 'none';
-                joinBtn.style.display = 'block';
-                voiceIndicator.innerHTML = '<i class="fas fa-microphone pulse" style="color: #4CD964;"></i><span>Microphone working! 🎤</span>';
-                voiceIndicator.style.background = 'rgba(76, 217, 100, 0.3)';
-                
-                // Start recording test
-                startRecording(stream);
-                
-                // Stop recording after 3 seconds
-                setTimeout(() => {
-                    stopRecording();
-                    voiceIndicator.innerHTML = '<i class="fas fa-check-circle" style="color: #4CD964;"></i><span>Microphone test complete!</span>';
-                }, 3000);
-                
-            } catch (error) {
-                alert('Microphone access denied. Please allow microphone permission to use voice chat.');
-                console.error('Microphone error:', error);
-            }
-        }
-
-        // Start recording
-        function startRecording(stream) {
-            megaSystem.mediaRecorder = new MediaRecorder(stream);
-            megaSystem.audioChunks = [];
-            megaSystem.isRecording = true;
-
-            megaSystem.mediaRecorder.ondataavailable = (event) => {
-                megaSystem.audioChunks.push(event.data);
-            };
-
-            megaSystem.mediaRecorder.start();
-        }
-
-        // Stop recording
-        function stopRecording() {
-            if (megaSystem.mediaRecorder && megaSystem.isRecording) {
-                megaSystem.mediaRecorder.stop();
-                megaSystem.isRecording = false;
-                
-                // Stop all tracks
-                megaSystem.mediaRecorder.stream.getTracks().forEach(track => track.stop());
-            }
-        }
-
-        // Join voice chat
-        function joinVoiceChat() {
-            closeVoiceTest();
-            alert('Voice chat connected! You can now speak in voice channels.');
-        }
-
-        // Create MEGA Server
-        function createMEGAServer() {
-            showModal('createModal');
-        }
-
-        function generateServer() {
-            const adminName = document.getElementById('adminNameInput').value.trim();
-            
-            if (!adminName) {
-                alert('Please enter your admin name');
-                return;
-            }
-
-            const serverCode = generateServerCode();
-            
-            // Create new server with voice channels
-            const newServer = {
-                code: serverCode,
-                adminName: adminName,
-                users: [],
-                channels: [
-                    { id: 1, name: '🌟 general', topic: 'General discussion', type: 'text' },
-                    { id: 2, name: '🎮 gaming', topic: 'Gaming talks', type: 'text' },
-                    { id: 3, name: '🔊 voice-chat', topic: 'Voice channel', type: 'voice' },
-                    { id: 4, name: '🎵 music', topic: 'Music sharing', type: 'voice' }
-                ],
-                createdAt: new Date(),
-                isActive: true
-            };
-
-            megaSystem.activeServers.push(newServer);
-            updateActiveServers();
-
-            // Close modal and open admin panel
-            closeModal('createModal');
-            openMEGAAdminPanel(newServer);
-        }
-
-        // Open MEGA Admin Panel with Voice Channels
-        function openMEGAAdminPanel(server) {
-            const adminWindow = window.open('', `MEGA Admin - ${server.code}`, 'width=1400,height=800');
-            megaSystem.currentAdminWindow = adminWindow;
-            
-            if (adminWindow) {
-                adminWindow.document.write(`
-                    <!DOCTYPE html>
-                    <html>
-                    <head>
-                        <title>MEGA Admin - ${server.code}</title>
-                        <style>
-                            body { 
-                                margin: 0; 
-                                padding: 0; 
-                                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                                color: white;
-                                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                            }
-                            .admin-container {
-                                max-width: 1200px;
-                                margin: 0 auto;
-                                padding: 20px;
-                            }
-                            .admin-header {
-                                text-align: center;
-                                padding: 40px;
-                                background: rgba(255,255,255,0.1);
-                                border-radius: 20px;
-                                margin-bottom: 30px;
-                                backdrop-filter: blur(10px);
-                            }
-                            .server-code-display {
-                                font-size: 2.5rem;
-                                font-weight: bold;
-                                background: rgba(0,0,0,0.3);
-                                padding: 20px;
-                                border-radius: 15px;
-                                margin: 20px 0;
-                                letter-spacing: 2px;
-                            }
-                            .stats-grid {
-                                display: grid;
-                                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-                                gap: 20px;
-                                margin: 30px 0;
-                            }
-                            .stat-card {
-                                background: rgba(255,255,255,0.1);
-                                padding: 25px;
-                                border-radius: 15px;
-                                text-align: center;
-                                backdrop-filter: blur(10px);
-                            }
-                            .stat-number {
-                                font-size: 2.5rem;
-                                font-weight: bold;
-                                margin-bottom: 10px;
-                            }
-                            .channels-section, .users-section {
-                                background: rgba(255,255,255,0.1);
-                                padding: 25px;
-                                border-radius: 15px;
-                                margin: 30px 0;
-                                backdrop-filter: blur(10px);
-                            }
-                            .channel-card, .user-card {
-                                display: flex;
-                                justify-content: space-between;
-                                align-items: center;
-                                padding: 15px;
-                                background: rgba(255,255,255,0.1);
-                                margin: 10px 0;
-                                border-radius: 10px;
-                            }
-                            .user-actions button, .channel-actions button {
-                                background: #FF6B6B;
-                                border: none;
-                                color: white;
-                                padding: 8px 15px;
-                                border-radius: 8px;
-                                cursor: pointer;
-                                margin-left: 5px;
-                                font-weight: 600;
-                            }
-                            .channel-actions button.create {
-                                background: #4CD964;
-                            }
-                            .channel-type {
-                                font-size: 0.8em;
-                                padding: 2px 8px;
-                                border-radius: 10px;
-                                margin-left: 10px;
-                            }
-                            .text-channel {
-                                background: #667eea;
-                            }
-                            .voice-channel {
-                                background: #4CD964;
-                            }
-                            .invite-section {
-                                background: rgba(255,255,255,0.1);
-                                padding: 20px;
-                                border-radius: 15px;
-                                margin: 20px 0;
-                                text-align: center;
-                                backdrop-filter: blur(10px);
-                            }
-                            .channel-topic {
-                                font-size: 0.9em;
-                                opacity: 0.8;
-                                margin-top: 5px;
-                            }
-                        </style>
-                    </head>
-                    <body>
-                        <div class="admin-container">
-                            <div class="admin-header">
-                                <h1 style="font-size: 2.5rem; margin-bottom: 10px;">👑 MEGA ADMIN PANEL</h1>
-                                <p style="font-size: 1.2rem;">Welcome, <strong>${server.adminName}</strong></p>
-                                <div class="server-code-display">${server.code}</div>
-                                <p>🟢 Server Status: ACTIVE | 👥 Users: ${server.users.length} | 📁 Channels: ${server.channels.length}</p>
-                            </div>
-
-                            <div class="invite-section">
-                                <h3>📨 Invite Users</h3>
-                                <p>Share this code with users to join your server:</p>
-                                <div style="font-size: 1.5rem; font-weight: bold; margin: 10px 0;">${server.code}</div>
-                                <button onclick="copyCode()" style="background: #4CD964; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; margin: 5px;">Copy Code</button>
-                                <button onclick="createChannel('text')" style="background: #667eea; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; margin: 5px;">Create Text Channel</button>
-                                <button onclick="createChannel('voice')" style="background: #4CD964; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; margin: 5px;">Create Voice Channel</button>
-                            </div>
-                            
-                            <div class="stats-grid">
-                                <div class="stat-card">
-                                    <div class="stat-number">${server.users.length}</div>
-                                    <div>Active Users</div>
-                                </div>
-                                <div class="stat-card">
-                                    <div class="stat-number">${server.channels.length}</div>
-                                    <div>Channels</div>
-                                </div>
-                                <div class="stat-card">
-                                    <div class="stat-number">${server.channels.filter(c => c.type === 'voice').length}</div>
-                                    <div>Voice Channels</div>
-                                </div>
-                                <div class="stat-card">
-                                    <div class="stat-number">100%</div>
-                                    <div>Voice Quality</div>
-                                </div>
-                            </div>
-
-                            <div class="channels-section">
-                                <h2 style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
-                                    <span>📁 Server Channels</span>
-                                    <div>
-                                        <button onclick="createChannel('text')" style="background: #667eea; color: white; border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-size: 0.9rem; margin-right: 5px;">
-                                            + Text
-                                        </button>
-                                        <button onclick="createChannel('voice')" style="background: #4CD964; color: white; border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-size: 0.9rem;">
-                                            + Voice
-                                        </button>
-                                    </div>
-                                </h2>
-                                <div id="channelsList">
-                                    ${server.channels.map(channel => `
-                                        <div class="channel-card">
-                                            <div>
-                                                <strong>${channel.name}</strong>
-                                                <span class="channel-type ${channel.type}-channel">${channel.type.toUpperCase()}</span>
-                                                ${channel.topic ? `<div class="channel-topic">${channel.topic}</div>` : ''}
-                                            </div>
-                                            <div class="channel-actions">
-                                                <button class="create" onclick="editChannel(${channel.id})">Edit</button>
-                                                <button onclick="deleteChannel(${channel.id})">Delete</button>
-                                            </div>
-                                        </div>
-                                    `).join('')}
-                                    ${server.channels.length === 0 ? 
-                                        '<p style="text-align: center; opacity: 0.7;">No channels created yet</p>' : ''}
-                                </div>
-                            </div>
-
-                            <div class="users-section">
-                                <h2 style="margin-bottom: 20px;">Connected Users</h2>
-                                <div id="adminUsersList">
-                                    ${server.users.map(user => `
-                                        <div class="user-card">
-                                            <div>
-                                                <strong>${user.name}</strong>
-                                                <div style="font-size: 0.9em; opacity: 0.8;">Joined: ${user.joinTime}</div>
-                                            </div>
-                                            <div class="user-actions">
-                                                <button onclick="kickUser('${user.name}')">Kick</button>
-                                            </div>
-                                        </div>
-                                    `).join('')}
-                                    ${server.users.length === 0 ? 
-                                        '<p style="text-align: center; opacity: 0.7;">No users connected yet</p>' : ''}
-                                </div>
-                            </div>
-                        </div>
-
-                        <script>
-                            let currentServer = ${JSON.stringify(server)};
-                            
-                            function createChannel(type) {
-                                const channelName = prompt('Enter channel name (e.g., # announcements):');
-                                if (channelName) {
-                                    const channelTopic = prompt('Enter channel topic (optional):') || '';
-                                    
-                                    const newChannel = {
-                                        id: Date.now(),
-                                        name: channelName,
-                                        topic: channelTopic,
-                                        type: type
-                                    };
-                                    
-                                    currentServer.channels.push(newChannel);
-                                    updateChannelsList();
-                                    alert('Channel "' + channelName + '" created successfully!');
-                                    
-                                    // Notify main window about channel creation
-                                    if (window.opener && !window.opener.closed) {
-                                        window.opener.postMessage({ 
-                                            type: 'channelCreated',
-                                            serverCode: '${server.code}',
-                                            channel: newChannel
-                                        }, '*');
-                                    }
-                                }
-                            }
-                            
-                            function editChannel(channelId) {
-                                const channel = currentServer.channels.find(c => c.id === channelId);
-                                if (channel) {
-                                    const newName = prompt('Edit channel name:', channel.name);
-                                    if (newName) {
-                                        channel.name = newName;
-                                        const newTopic = prompt('Edit channel topic:', channel.topic || '');
-                                        channel.topic = newTopic;
-                                        updateChannelsList();
-                                        alert('Channel updated successfully!');
-                                    }
-                                }
-                            }
-                            
-                            function deleteChannel(channelId) {
-                                if (confirm('Are you sure you want to delete this channel?')) {
-                                    currentServer.channels = currentServer.channels.filter(c => c.id !== channelId);
-                                    updateChannelsList();
-                                    alert('Channel deleted successfully!');
-                                }
-                            }
-                            
-                            function updateChannelsList() {
-                                const channelsList = document.getElementById('channelsList');
-                                channelsList.innerHTML = currentServer.channels.map(channel => \`
-                                    <div class="channel-card">
-                                        <div>
-                                            <strong>\${channel.name}</strong>
-                                            <span class="channel-type \${channel.type}-channel">\${channel.type.toUpperCase()}</span>
-                                            \${channel.topic ? \`<div class="channel-topic">\${channel.topic}</div>\` : ''}
-                                        </div>
-                                        <div class="channel-actions">
-                                            <button class="create" onclick="editChannel(\${channel.id})">Edit</button>
-                                            <button onclick="deleteChannel(\${channel.id})">Delete</button>
-                                        </div>
-                                    </div>
-                                \`).join('');
-                                
-                                // Update channels count in header
-                                document.querySelector('.admin-header p').innerHTML = 
-                                    '🟢 Server Status: ACTIVE | 👥 Users: \${currentServer.users.length} | 📁 Channels: \${currentServer.channels.length}';
-                            }
-                            
-                            function kickUser(username) {
-                                if (confirm('Kick ' + username + ' from server?')) {
-                                    currentServer.users = currentServer.users.filter(u => u.name !== username);
-                                    updateUsersList();
-                                    alert(username + ' has been kicked');
-                                }
-                            }
-                            
-                            function updateUsersList() {
-                                const usersList = document.getElementById('adminUsersList');
-                                usersList.innerHTML = currentServer.users.map(user => \`
-                                    <div class="user-card">
-                                        <div>
-                                            <strong>\${user.name}</strong>
-                                            <div style="font-size: 0.9em; opacity: 0.8;">Joined: \${user.joinTime}</div>
-                                        </div>
-                                        <div class="user-actions">
-                                            <button onclick="kickUser('\${user.name}')">Kick</button>
-                                        </div>
-                                    </div>
-                                \`).join('');
-                                
-                                if (currentServer.users.length === 0) {
-                                    usersList.innerHTML = '<p style="text-align: center; opacity: 0.7;">No users connected yet</p>';
-                                }
-                            }
-
-                            function copyCode() {
-                                navigator.clipboard.writeText('${server.code}');
-                                alert('Server code copied to clipboard!');
-                            }
-                        <\/script>
-                    </body>
-                    </html>
-                `);
-            }
-        }
-
-        // Join MEGA Server
-        function joinMEGAServer() {
-            showModal('joinModal');
-        }
-
-        // Connect to MEGA Server
-        function connectToMEGAServer() {
-            const serverCode = document.getElementById('serverCodeInput').value.trim().toUpperCase();
-            const userName = document.getElementById('userNameInput').value.trim();
+        // Join chat function
+        function joinChat() {
+            const serverCode = document.getElementById('serverCode').value.trim().toUpperCase();
+            const userName = document.getElementById('userName').value.trim();
 
             if (!userName) {
-                alert('Please enter your username');
+                alert('Please enter your name');
                 return;
             }
 
             if (!serverCode.startsWith('MEGA-')) {
-                alert('Invalid server code format. Should start with MEGA-');
+                alert('Please enter a valid server code starting with MEGA-');
                 return;
             }
 
-            // Find the server
-            const targetServer = megaSystem.activeServers.find(server => server.code === serverCode);
+            currentUser = userName;
+            currentServer = serverCode;
+
+            // Show chat screen
+            document.getElementById('joinScreen').style.display = 'none';
+            document.getElementById('chatScreen').style.display = 'flex';
+            document.getElementById('currentServer').textContent = serverCode;
+
+            // Initialize chat
+            initializeChat();
+            initializeVoiceChat();
+        }
+
+        // Initialize chat
+        function initializeChat() {
+            const messagesContainer = document.getElementById('messagesContainer');
             
-            if (!targetServer) {
-                alert('Server not found. Please check the code or create a new server.');
-                return;
-            }
+            // Add welcome messages
+            addSystemMessage(`Welcome to ${currentServer}, ${currentUser}!`);
+            addSystemMessage('Voice chat is enabled. Click the microphone button to speak.');
+            
+            // Add sample users
+            updateUsersList([
+                { name: 'Alex', isSpeaking: false },
+                { name: 'Sam', isSpeaking: true },
+                { name: currentUser, isSpeaking: false, isYou: true }
+            ]);
 
-            // Add user to server
-            const newUser = {
-                name: userName,
-                joinTime: new Date().toLocaleTimeString(),
-                id: Date.now()
+            // Add sample messages
+            setTimeout(() => {
+                addMessage('Alex', 'Hello everyone! Voice chat is working great!', false);
+            }, 1000);
+
+            setTimeout(() => {
+                addMessage('Sam', 'I can hear you clearly! 🎧', false);
+            }, 2000);
+        }
+
+        // Initialize voice chat
+        async function initializeVoiceChat() {
+            try {
+                // Request microphone permission
+                localStream = await navigator.mediaDevices.getUserMedia({ 
+                    audio: {
+                        echoCancellation: true,
+                        noiseSuppression: true,
+                        autoGainControl: true
+                    } 
+                });
+                
+                console.log('Microphone access granted');
+                
+                // Setup media recorder for voice messages
+                setupMediaRecorder();
+                
+            } catch (error) {
+                console.error('Microphone access denied:', error);
+                alert('Microphone access is required for voice chat. Please allow microphone permission.');
+                isVoiceEnabled = false;
+                updateVoiceUI();
+            }
+        }
+
+        // Setup media recorder
+        function setupMediaRecorder() {
+            if (!localStream) return;
+
+            mediaRecorder = new MediaRecorder(localStream);
+            audioChunks = [];
+
+            mediaRecorder.ondataavailable = (event) => {
+                audioChunks.push(event.data);
             };
 
-            targetServer.users.push(newUser);
-            updateActiveServers();
+            mediaRecorder.onstop = () => {
+                // Create audio blob and play it (simulating voice message)
+                const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                const audioUrl = URL.createObjectURL(audioBlob);
+                
+                // Add voice message to chat
+                addVoiceMessage(currentUser, audioUrl);
+                
+                // Simulate other users hearing the voice
+                simulateVoiceBroadcast();
+            };
+        }
 
-            // Update status
-            document.getElementById('userStatus').innerHTML = '<i class="fas fa-plug"></i> Connected to ' + serverCode;
-            document.getElementById('userStatus').className = 'status online';
+        // Toggle voice on/off
+        function toggleVoice() {
+            isVoiceEnabled = !isVoiceEnabled;
+            updateVoiceUI();
+            
+            if (isVoiceEnabled) {
+                addSystemMessage('Voice chat enabled');
+            } else {
+                addSystemMessage('Voice chat disabled');
+                stopRecording();
+            }
+        }
 
-            // Close modal and open chat with voice test
-            closeModal('joinModal');
-            showVoiceTest(); // Show voice test first
-            // Then open chat after voice test
+        // Update voice UI
+        function updateVoiceUI() {
+            const voiceBtn = document.getElementById('toggleVoiceBtn');
+            const voiceStatus = document.getElementById('voiceStatus');
+            const voiceSendBtn = document.getElementById('voiceSendBtn');
+
+            if (isVoiceEnabled) {
+                voiceBtn.innerHTML = '<i class="fas fa-microphone"></i> Voice On';
+                voiceBtn.classList.remove('off');
+                voiceStatus.innerHTML = '<i class="fas fa-microphone"></i> Voice Ready';
+                voiceSendBtn.disabled = false;
+            } else {
+                voiceBtn.innerHTML = '<i class="fas fa-microphone-slash"></i> Voice Off';
+                voiceBtn.classList.add('off');
+                voiceStatus.innerHTML = '<i class="fas fa-microphone-slash"></i> Voice Off';
+                voiceSendBtn.disabled = true;
+            }
+        }
+
+        // Toggle voice recording
+        function toggleVoiceRecording() {
+            if (!isVoiceEnabled) {
+                alert('Please enable voice chat first');
+                return;
+            }
+
+            if (!isRecording) {
+                startRecording();
+            } else {
+                stopRecording();
+            }
+        }
+
+        // Start recording
+        function startRecording() {
+            if (!mediaRecorder || mediaRecorder.state === 'recording') return;
+
+            audioChunks = [];
+            mediaRecorder.start();
+            isRecording = true;
+
+            // Update UI
+            const voiceSendBtn = document.getElementById('voiceSendBtn');
+            voiceSendBtn.classList.add('recording');
+            voiceSendBtn.innerHTML = '<i class="fas fa-stop"></i>';
+            
+            // Show recording indicator
+            updateUserSpeaking(currentUser, true);
+            
+            addSystemMessage('Recording... Speak now!');
+        }
+
+        // Stop recording
+        function stopRecording() {
+            if (!mediaRecorder || mediaRecorder.state !== 'recording') return;
+
+            mediaRecorder.stop();
+            isRecording = false;
+
+            // Update UI
+            const voiceSendBtn = document.getElementById('voiceSendBtn');
+            voiceSendBtn.classList.remove('recording');
+            voiceSendBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+            
+            // Hide speaking indicator
+            updateUserSpeaking(currentUser, false);
+        }
+
+        // Simulate voice broadcast to other users
+        function simulateVoiceBroadcast() {
+            const users = ['Alex', 'Sam', 'Jordan'];
+            
+            users.forEach(user => {
+                if (user !== currentUser) {
+                    // Random delay to simulate real-time
+                    setTimeout(() => {
+                        updateUserSpeaking(user, true);
+                        
+                        // Add voice heard message
+                        setTimeout(() => {
+                            addMessage(user, 'I can hear you! 🔊', false);
+                            updateUserSpeaking(user, false);
+                        }, 1000);
+                    }, Math.random() * 1000);
+                }
+            });
+        }
+
+        // Send text message
+        function sendMessage() {
+            const messageInput = document.getElementById('messageInput');
+            const message = messageInput.value.trim();
+
+            if (message) {
+                addMessage(currentUser, message, true);
+                messageInput.value = '';
+
+                // Simulate replies
+                simulateReply();
+            }
+        }
+
+        // Add text message
+        function addMessage(sender, text, isOwn = false) {
+            const messagesContainer = document.getElementById('messagesContainer');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isOwn ? 'own' : 'other'}`;
+            
+            messageDiv.innerHTML = `
+                <div class="message-header">
+                    <span class="username">${sender}</span>
+                    ${!isOwn ? '<i class="fas fa-user"></i>' : ''}
+                </div>
+                <div class="message-text">${text}</div>
+            `;
+
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        // Add voice message
+        function addVoiceMessage(sender, audioUrl) {
+            const messagesContainer = document.getElementById('messagesContainer');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message voice own';
+            
+            messageDiv.innerHTML = `
+                <div class="message-header">
+                    <span class="username">${sender}</span>
+                    <i class="fas fa-microphone voice-icon blink"></i>
+                </div>
+                <div class="message-text">
+                    Voice message
+                    <audio controls style="margin-top: 8px; width: 100%;">
+                        <source src="${audioUrl}" type="audio/wav">
+                    </audio>
+                </div>
+            `;
+
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+            // Auto play after a delay (simulating real voice chat)
             setTimeout(() => {
-                openMEGAChat(userName, targetServer);
-            }, 1000);
+                const audio = messageDiv.querySelector('audio');
+                if (audio) {
+                    audio.play().catch(e => console.log('Auto-play prevented'));
+                }
+            }, 500);
         }
 
-        // Open MEGA Chat with Voice Features
-        function openMEGAChat(userName, server) {
-            const chatWindow = window.open('', `MEGA Chat - ${server.code}`, 'width=1200,height=700');
-            if (chatWindow) {
-                chatWindow.document.write(`
-                    <!DOCTYPE html>
-                    <html>
-                    <head>
-                        <title>MEGA Chat - ${server.code}</title>
-                        <style>
-                            body { 
-                                margin: 0; 
-                                padding: 0; 
-                                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                                color: white;
-                                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                            }
-                            .chat-container {
-                                display: flex;
-                                height: 100vh;
-                            }
-                            .sidebar {
-                                width: 280px;
-                                background: rgba(255,255,255,0.1);
-                                padding: 25px;
-                                backdrop-filter: blur(10px);
-                            }
-                            .main-chat {
-                                flex: 1;
-                                display: flex;
-                                flex-direction: column;
-                            }
-                            .chat-header {
-                                background: rgba(255,255,255,0.1);
-                                padding: 25px;
-                                backdrop-filter: blur(10px);
-                                border-bottom: 1px solid rgba(255,255,255,0.2);
-                            }
-                            .messages {
-                                flex: 1;
-                                padding: 25px;
-                                overflow-y: auto;
-                            }
-                            .message {
-                                margin-bottom: 20px;
-                                padding: 15px;
-                                border-radius: 15px;
-                                max-width: 70%;
-                                animation: fadeIn 0.3s ease;
-                            }
-                            @keyframes fadeIn {
-                                from { opacity: 0; transform: translateY(10px); }
-                                to { opacity: 1; transform: translateY(0); }
-                            }
-                            .message.own {
-                                background: rgba(76, 217, 100, 0.3);
-                                margin-left: auto;
-                                border: 1px solid rgba(76, 217, 100, 0.5);
-                            }
-                            .message.other {
-                                background: rgba(255,255,255,0.1);
-                                border: 1px solid rgba(255,255,255,0.2);
-                            }
-                            .message.system {
-                                background: rgba(255, 193, 7, 0.3);
-                                text-align: center;
-                                border: 1px solid rgba(255, 193, 7, 0.5);
-                                max-width: 100%;
-                            }
-                            .message.voice {
-                                background: rgba(102, 126, 234, 0.3);
-                                border: 1px solid rgba(102, 126, 234, 0.5);
-                            }
-                            .input-area {
-                                padding: 25px;
-                                background: rgba(255,255,255,0.1);
-                                display: flex;
-                                gap: 15px;
-                                backdrop-filter: blur(10px);
-                            }
-                            .input-area input {
-                                flex: 1;
-                                padding: 15px 20px;
-                                border: none;
-                                border-radius: 12px;
-                                background: rgba(255,255,255,0.9);
-                                color: #333;
-                                font-size: 1rem;
-                            }
-                            .input-area button {
-                                background: linear-gradient(135deg, #4CD964, #5DE876);
-                                color: white;
-                                border: none;
-                                padding: 15px 20px;
-                                border-radius: 12px;
-                                cursor: pointer;
-                                font-weight: 600;
-                                transition: transform 0.2s;
-                            }
-                            .input-area button:hover {
-                                transform: scale(1.05);
-                            }
-                            .voice-btn {
-                                background: linear-gradient(135deg, #667eea, #764ba2) !important;
-                            }
-                            .channel {
-                                padding: 12px 15px;
-                                margin: 8px 0;
-                                border-radius: 10px;
-                                cursor: pointer;
-                                transition: background 0.3s;
-                            }
-                            .channel.active {
-                                background: rgba(255,255,255,0.2);
-                                font-weight: 600;
-                            }
-                            .channel:hover {
-                                background: rgba(255,255,255,0.15);
-                            }
-                            .channel.voice {
-                                border-left: 3px solid #4CD964;
-                            }
-                            .user-online {
-                                padding: 8px 12px;
-                                margin: 5px 0;
-                                border-radius: 8px;
-                                background: rgba(255,255,255,0.1);
-                            }
-                            .server-info {
-                                font-size: 0.9em;
-                                opacity: 0.8;
-                                margin-bottom: 15px;
-                            }
-                            .channel-topic {
-                                font-size: 0.8em;
-                                opacity: 0.7;
-                                margin-top: 2px;
-                            }
-                            .voice-indicator {
-                                display: inline-flex;
-                                align-items: center;
-                                gap: 8px;
-                                background: rgba(255,255,255,0.2);
-                                padding: 8px 15px;
-                                border-radius: 20px;
-                                margin: 5px;
-                            }
-                            .pulse {
-                                animation: pulse 1.5s infinite;
-                            }
-                            @keyframes pulse {
-                                0% { opacity: 1; }
-                                50% { opacity: 0.5; }
-                                100% { opacity: 1; }
-                            }
-                        </style>
-                    </head>
-                    <body>
-                        <div class="chat-container">
-                            <div class="sidebar">
-                                <h2>🚀 MEGA</h2>
-                                <div class="server-info">Server: ${server.code}</div>
-                                <div style="color: #4CD964; margin: 15px 0;">🟢 Connected as: ${userName}</div>
-                                
-                                <h3 style="margin: 25px 0 15px 0;">Channels</h3>
-                                ${server.channels.map(channel => `
-                                    <div class="channel ${channel.name === '🌟 general' ? 'active' : ''} ${channel.type === 'voice' ? 'voice' : ''}">
-                                        <div>
-                                            ${channel.type === 'voice' ? '🔊' : '#'} ${channel.name}
-                                            ${channel.topic ? `<div class="channel-topic">${channel.topic}</div>` : ''}
-                                        </div>
-                                    </div>
-                                `).join('')}
-                                
-                                <h3 style="margin: 25px 0 15px 0;">Online Users</h3>
-                                <div class="user-online">👑 ${server.adminName} (Admin)</div>
-                                <div class="user-online">🟢 ${userName} (You)</div>
-                                ${server.users.filter(u => u.name !== userName).map(u => 
-                                    `<div class="user-online">🟢 ${u.name}</div>`
-                                ).join('')}
+        // Add system message
+        function addSystemMessage(text) {
+            const messagesContainer = document.getElementById('messagesContainer');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message system';
+            messageDiv.textContent = text;
 
-                                <div style="margin-top: 20px; padding: 15px; background: rgba(255,255,255,0.1); border-radius: 10px;">
-                                    <h4>🎤 Voice Status</h4>
-                                    <div class="voice-indicator" id="voiceStatus">
-                                        <i class="fas fa-microphone"></i>
-                                        <span>Click to speak</span>
-                                    </div>
-                                    <button onclick="toggleVoice()" style="background: #4CD964; color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; width: 100%; margin-top: 10px;">
-                                        Start Voice Chat
-                                    </button>
-                                </div>
-                            </div>
-                            
-                            <div class="main-chat">
-                                <div class="chat-header">
-                                    <h2># 🌟 general</h2>
-                                    <div>${server.users.length} users online • ${server.channels.length} channels</div>
-                                </div>
-                                
-                                <div class="messages" id="messagesContainer">
-                                    <div class="message system">
-                                        🎉 Welcome to MEGA Chat, <strong>${userName}</strong>!
-                                    </div>
-                                    <div class="message system">
-                                        Server: <strong>${server.code}</strong> • Admin: <strong>${server.adminName}</strong>
-                                    </div>
-                                    <div class="message system">
-                                        🔊 Voice channels available! Click voice channels to speak.
-                                    </div>
-                                    <div class="message other">
-                                        <strong>MEGA Bot:</strong> Use the microphone button to send voice messages!
-                                    </div>
-                                    <div class="message voice">
-                                        <strong>Voice Message:</strong> 
-                                        <div style="display: flex; align-items: center; gap: 10px; margin-top: 5px;">
-                                            <i class="fas fa-play-circle" style="color: #4CD964; cursor: pointer;"></i>
-                                            <span>Click to play voice message</span>
-                                            <span style="font-size: 0.8em; opacity: 0.7;">(3s)</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="input-area">
-                                    <input type="text" id="messageInput" placeholder="Type your message or click mic to speak...">
-                                    <button class="voice-btn" onclick="sendVoiceMessage()">
-                                        <i class="fas fa-microphone"></i>
-                                    </button>
-                                    <button onclick="sendMessage()">Send</button>
-                                </div>
-                            </div>
-                        </div>
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
 
-                        <script>
-                            let isVoiceActive = false;
-                            
-                            function sendMessage() {
-                                const input = document.getElementById('messageInput');
-                                const message = input.value.trim();
-                                
-                                if (message) {
-                                    const messagesContainer = document.getElementById('messagesContainer');
-                                    const newMessage = document.createElement('div');
-                                    newMessage.className = 'message own';
-                                    newMessage.innerHTML = '<strong>${userName}:</strong> ' + message;
-                                    messagesContainer.appendChild(newMessage);
-                                    
-                                    input.value = '';
-                                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
-                                    
-                                    // Simulate replies
-                                    setTimeout(() => {
-                                        const replies = [
-                                            "Welcome to our MEGA server! 🚀",
-                                            "Great to have you here!",
-                                            "That's awesome! 👍",
-                                            "Thanks for joining us!",
-                                            "MEGA is the best, right? 😄"
-                                        ];
-                                        const users = ['${server.adminName} (Admin)', 'MEGA Bot', 'Moderator'];
-                                        const randomUser = users[Math.floor(Math.random() * users.length)];
-                                        const reply = replies[Math.floor(Math.random() * replies.length)];
-                                        
-                                        const replyMessage = document.createElement('div');
-                                        replyMessage.className = 'message other';
-                                        replyMessage.innerHTML = '<strong>' + randomUser + ':</strong> ' + reply;
-                                        messagesContainer.appendChild(replyMessage);
-                                        messagesContainer.scrollTop = messagesContainer.scrollHeight;
-                                    }, 1000 + Math.random() * 2000);
-                                }
-                            }
+        // Update users list
+        function updateUsersList(users) {
+            const usersList = document.getElementById('usersList');
+            usersList.innerHTML = '';
 
-                            function sendVoiceMessage() {
-                                const messagesContainer = document.getElementById('messagesContainer');
-                                const voiceMessage = document.createElement('div');
-                                voiceMessage.className = 'message own voice';
-                                voiceMessage.innerHTML = \`
-                                    <strong>${userName} (Voice):</strong> 
-                                    <div style="display: flex; align-items: center; gap: 10px; margin-top: 5px;">
-                                        <i class="fas fa-play-circle" style="color: #4CD964; cursor: pointer;"></i>
-                                        <span>Voice message recorded</span>
-                                        <span style="font-size: 0.8em; opacity: 0.7;">(5s)</span>
-                                    </div>
-                                \`;
-                                messagesContainer.appendChild(voiceMessage);
-                                messagesContainer.scrollTop = messagesContainer.scrollHeight;
-                                
-                                // Show recording indicator
-                                const voiceStatus = document.getElementById('voiceStatus');
-                                voiceStatus.innerHTML = '<i class="fas fa-microphone pulse" style="color: #4CD964;"></i><span>Recording... 🎤</span>';
-                                voiceStatus.style.background = 'rgba(76, 217, 100, 0.3)';
-                                
-                                // Stop recording after 3 seconds
-                                setTimeout(() => {
-                                    voiceStatus.innerHTML = '<i class="fas fa-check-circle" style="color: #4CD964;"></i><span>Voice sent!</span>';
-                                    setTimeout(() => {
-                                        voiceStatus.innerHTML = '<i class="fas fa-microphone"></i><span>Click to speak</span>';
-                                        voiceStatus.style.background = 'rgba(255,255,255,0.2)';
-                                    }, 2000);
-                                }, 3000);
-                            }
+            users.forEach(user => {
+                const userDiv = document.createElement('div');
+                userDiv.className = `user-item ${user.isSpeaking ? 'user-speaking' : ''} ${user.isYou ? 'you' : ''}`;
+                
+                userDiv.innerHTML = `
+                    <div class="user-avatar">${user.name.charAt(0)}</div>
+                    <span>${user.name} ${user.isYou ? '(You)' : ''}</span>
+                    ${user.isSpeaking ? '<div class="speaking-indicator blink"></div>' : ''}
+                `;
 
-                            function toggleVoice() {
-                                isVoiceActive = !isVoiceActive;
-                                const voiceStatus = document.getElementById('voiceStatus');
-                                
-                                if (isVoiceActive) {
-                                    voiceStatus.innerHTML = '<i class="fas fa-microphone pulse" style="color: #4CD964;"></i><span>Voice active! 🎤</span>';
-                                    voiceStatus.style.background = 'rgba(76, 217, 100, 0.3)';
-                                    alert('Voice chat activated! You can now speak in voice channels.');
-                                } else {
-                                    voiceStatus.innerHTML = '<i class="fas fa-microphone-slash"></i><span>Voice disabled</span>';
-                                    voiceStatus.style.background = 'rgba(255,255,255,0.2)';
-                                }
-                            }
+                usersList.appendChild(userDiv);
+            });
+        }
 
-                            document.getElementById('messageInput').addEventListener('keypress', function(e) {
-                                if (e.key === 'Enter') {
-                                    sendMessage();
-                                }
-                            });
-
-                            document.getElementById('messageInput').focus();
-                        <\/script>
-                    </body>
-                    </html>
-                `);
+        // Update user speaking status
+        function updateUserSpeaking(userName, isSpeaking) {
+            const users = Array.from(document.querySelectorAll('.user-item'));
+            const userItem = users.find(item => item.textContent.includes(userName));
+            
+            if (userItem) {
+                if (isSpeaking) {
+                    userItem.classList.add('user-speaking');
+                    if (!userItem.querySelector('.speaking-indicator')) {
+                        userItem.innerHTML += '<div class="speaking-indicator blink"></div>';
+                    }
+                } else {
+                    userItem.classList.remove('user-speaking');
+                    const indicator = userItem.querySelector('.speaking-indicator');
+                    if (indicator) {
+                        indicator.remove();
+                    }
+                }
             }
         }
 
-        // Initialize
-        updateActiveServers();
+        // Simulate reply from other users
+        function simulateReply() {
+            const replies = [
+                "That's interesting!",
+                "I agree with you!",
+                "Thanks for sharing!",
+                "What do you think about this?",
+                "That's awesome! 👍"
+            ];
 
-        // Add demo server
-        setTimeout(() => {
-            if (megaSystem.activeServers.length === 0) {
-                const demoServer1 = {
-                    code: 'MEGA-7A9B',
-                    adminName: 'Alex',
-                    users: [
-                        { name: 'Alex', joinTime: '10:30 AM' },
-                        { name: 'Sam', joinTime: '10:35 AM' }
-                    ],
-                    channels: [
-                        { id: 1, name: '🌟 general', topic: 'General discussion', type: 'text' },
-                        { id: 2, name: '🎮 gaming', topic: 'Gaming talks', type: 'text' },
-                        { id: 3, name: '🔊 voice-chat', topic: 'Voice channel', type: 'voice' },
-                        { id: 4, name: '🎵 music', topic: 'Music sharing', type: 'voice' }
-                    ],
-                    createdAt: new Date(),
-                    isActive: true
-                };
+            const users = ['Alex', 'Sam', 'Jordan'];
+            const randomUser = users[Math.floor(Math.random() * users.length)];
+            const randomReply = replies[Math.floor(Math.random() * replies.length)];
 
-                megaSystem.activeServers.push(demoServer1);
-                megaSystem.usedCodes.add('MEGA-7A9B');
-                updateActiveServers();
+            setTimeout(() => {
+                addMessage(randomUser, randomReply, false);
+            }, 1000 + Math.random() * 2000);
+        }
+
+        // Handle Enter key for sending messages
+        document.getElementById('messageInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
             }
-        }, 1000);
+        });
+
+        // Initialize voice UI
+        updateVoiceUI();
     </script>
 </body>
 </html>
